@@ -21,6 +21,7 @@ class AuthController extends Controller
         $this->cognito = $cognito;
         $this->dynamo = $dynamo;
     }
+
     # Cadastra um novo usuário no sistema
     public function cadastro(Request $request)
     {
@@ -50,16 +51,17 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Erro ao cadastrar usuário.',
                 'error' => $e->getAwsErrorMessage(),
+                'aws_error_code' => $e->getAwsErrorCode(),
+                'aws_error_type' => $e->getAwsErrorType(),
+                'raw_message' => $e->getMessage(),
             ], 400);
         }
     }
 
     # Realiza login do usuário
-     
-     # Valida email e senha
-     # Autentica no Cognito
-     # Retorna tokens de acesso (AccessToken, IdToken, RefreshToken)
-     
+    # Valida email e senha
+    # Autentica no Cognito
+    # Retorna tokens de acesso (AccessToken, IdToken, RefreshToken)
     public function login(Request $request)
     {
         $request->validate([
@@ -70,10 +72,22 @@ class AuthController extends Controller
         try {
             $result = $this->cognito->login($request->email, $request->senha);
 
+            $accessToken = $result['AuthenticationResult']['AccessToken'];
+            $userInfo = $this->cognito->getUser($accessToken);
+
+            $nome = '';
+            foreach ($userInfo['UserAttributes'] as $attr) {
+                if ($attr['Name'] === 'name') {
+                    $nome = $attr['Value'];
+                }
+            }
+
             return response()->json([
-                'accessToken' => $result['AuthenticationResult']['AccessToken'],
+                'accessToken' => $accessToken,
                 'idToken' => $result['AuthenticationResult']['IdToken'],
                 'refreshToken' => $result['AuthenticationResult']['RefreshToken'],
+                'userId' => $userInfo['Username'],
+                'nome' => $nome,
             ]);
 
         } catch (AwsException $e) {

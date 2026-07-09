@@ -21,13 +21,17 @@ class AuthCognito
             $cognito = new CognitoService();
             $cognito->getUser($token);
         } catch (AwsException $e) {
-            return response()->json(['message' => 'Token inválido ou expirado.'], 401);
+            return response()->json([
+                'message' => 'Token inválido ou expirado.',
+                'error' => $e->getAwsErrorMessage(),
+                'aws_error_code' => $e->getAwsErrorCode(),
+                'token_recebido' => substr($token, 0, 30) . '...',
+            ], 401);
         }
 
         return $next($request);
     }
 }
-
 /**
  * Middleware de autenticação via AWS Cognito
  * 
