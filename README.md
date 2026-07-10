@@ -1,4 +1,4 @@
-# CertiEvents - Sistema de Certificados para Eventos
+# CertiEvent - Sistema de Certificados para Eventos
 ## Instituto Federal de Pernambuco (IFPE) - Campus Igarassu
 
 Curso Superior em **Tecnologia em Sistemas para Internet - (TSI)**
@@ -9,12 +9,12 @@ Curso Superior em **Tecnologia em Sistemas para Internet - (TSI)**
 
 ## Introdução
 
-Este repositório centraliza o desenvolvimento do **CertiEvents**, sistema de emissão automática de certificados de participação para eventos, desenvolvido como projeto para apresentação na **Demo Week**.
+Este repositório centraliza o desenvolvimento do **CertiEvent**, sistema de emissão automática de certificados de participação para eventos, desenvolvido como projeto para apresentação na **Demo Week**.
 + Mais do que um sistema funcional, o projeto reflete a aplicação de conceitos de arquitetura fullstack em nuvem, integrando um backend Laravel a serviços gerenciados da AWS, com orquestração de infraestrutura totalmente automatizada.
 
 ## O que o sistema faz
 
-O CertiEvents permite que qualquer participante do evento se cadastre, acompanhe informações sobre o evento e gere seu próprio certificado de participação em PDF, recebido diretamente por e-mail.
+O CertiEvent permite que qualquer participante do evento se cadastre, acompanhe informações sobre o evento e gere seu próprio certificado de participação em PDF, recebido diretamente por e-mail.
 
 1. Usuário se cadastra e faz login na plataforma
 2. Acessa informações sobre o evento
