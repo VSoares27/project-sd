@@ -6,7 +6,7 @@
     "deleteOutDir": true,
     "assets": [
       {
-        "include": "pdf/templates/*.hbs",
+        "include": "pdf/templates/*",
         "watchAssets": true
       }
     ]

@@ -5,6 +5,7 @@ import {
   SignUpCommand,
   InitiateAuthCommand,
   GetUserCommand,
+  ConfirmSignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 
 @Injectable()
@@ -51,6 +52,15 @@ export class CognitoService {
   async getUser(accessToken: string) {
     const command = new GetUserCommand({
       AccessToken: accessToken,
+    });
+    return this.client.send(command);
+  }
+
+  async confirmarCadastro(email: string, codigo: string) {
+    const command = new ConfirmSignUpCommand({
+      ClientId: this.clientId,
+      Username: email,
+      ConfirmationCode: codigo,
     });
     return this.client.send(command);
   }

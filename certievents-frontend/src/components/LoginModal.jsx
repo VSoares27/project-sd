@@ -2,10 +2,11 @@ import { useState } from 'react';
 import api from '../services/api';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
-  const [step, setStep] = useState('email'); // 'email' | 'login' | 'register'
+  const [step, setStep] = useState('email'); // 'email' | 'login' | 'register' | 'confirm'
   const [email, setEmail] = useState('');
   const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
+  const [codigo, setCodigo] = useState('');
   const [erro, setErro] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [carregando, setCarregando] = useState(false);
@@ -18,6 +19,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     setMensagem('');
     setSenha('');
     setNome('');
+    setCodigo('');
     onClose();
   }
 
@@ -85,7 +87,28 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       handleClose();
     } catch (err) {
       console.error(err);
-      setErro(err.response?.data?.message || 'E-mail ou senha incorretos.');
+      const backendError = err.response?.data?.error;
+      if (backendError === 'User is not confirmed.') {
+        setErro(
+          <span>
+            Sua conta ainda não foi confirmada.{' '}
+            <a
+              href="#confirm"
+              style={{ color: '#0082f4', textDecoration: 'underline', fontWeight: 'bold' }}
+              onClick={(e) => {
+                e.preventDefault();
+                setErro('');
+                setMensagem('Insira o código de verificação enviado para o seu e-mail.');
+                setStep('confirm');
+              }}
+            >
+              Clique aqui para confirmar.
+            </a>
+          </span>
+        );
+      } else {
+        setErro(err.response?.data?.message || 'E-mail ou senha incorretos.');
+      }
     } finally {
       setCarregando(false);
     }
@@ -98,12 +121,30 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
     try {
       await api.post('/cadastro', { nome, email, senha });
-      setMensagem('Cadastro realizado com sucesso! Faça login para continuar.');
+      setMensagem('Cadastro realizado! Enviamos um código de verificação para o seu e-mail.');
       setSenha('');
-      setStep('login');
+      setStep('confirm');
     } catch (err) {
       console.error(err);
       setErro(err.response?.data?.message || 'Erro ao realizar cadastro. Tente novamente.');
+    } finally {
+      setCarregando(false);
+    }
+  }
+
+  async function handleConfirmSubmit(e) {
+    e.preventDefault();
+    setErro('');
+    setCarregando(true);
+
+    try {
+      await api.post('/confirmar', { email, codigo });
+      setMensagem('Conta confirmada com sucesso! Você já pode fazer login.');
+      setCodigo('');
+      setStep('login');
+    } catch (err) {
+      console.error(err);
+      setErro(err.response?.data?.message || 'Erro ao confirmar código. Tente novamente.');
     } finally {
       setCarregando(false);
     }
@@ -195,23 +236,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                 </p>
               </div>
 
-              {/* Botões Sociais Mockups */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
-                <button type="button" className="btn-secondary" style={{ width: '100%', fontSize: '13px', padding: '10px' }} onClick={() => alert('Login social demonstrativo!')}>
-                  <svg style={{ marginRight: 6 }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 2h-2a5 5 0 0 0-5 5v3H9v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                  Continuar com o Facebook
-                </button>
-                <button type="button" className="btn-secondary" style={{ width: '100%', fontSize: '13px', padding: '10px' }} onClick={() => alert('Login social demonstrativo!')}>
-                  <svg style={{ marginRight: 6 }} width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.24 10.285V13.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l2.427-2.334C17.955 2.192 15.34 1 12.24 1 5.92 1 12s4.92 11 11.24 11c6.6 0 11-4.65 11-11.2 0-.756-.08-1.33-.18-1.815H12.24z"></path></svg>
-                  Continuar com o Google
-                </button>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#cbd5e1' }}>
-                <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
-                <span style={{ padding: '0 10px', fontSize: '11px', color: '#94a3b8', fontWeight: 600 }}>OU USE SUA SENHA</span>
-                <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
-              </div>
 
               <form onSubmit={handleLoginSubmit}>
                 <div style={{ marginBottom: 12 }}>
@@ -317,6 +341,55 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                 Já tem uma conta?{' '}
                 <a href="#login" style={{ fontWeight: '600' }} onClick={(e) => { e.preventDefault(); setErro(''); setStep('login'); }}>
                   Entrar
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* PASSO 4: Tela de Confirmação de Código */}
+          {step === 'confirm' && (
+            <div>
+              <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                <div style={{
+                  width: 48, height: 48, borderRadius: '50%', backgroundColor: '#eef5fc',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px'
+                }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0082f4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                    <path d="M12 6v6l4 2"></path>
+                  </svg>
+                </div>
+                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#2c2c2c', marginBottom: 4 }}>
+                  Confirmação de Conta
+                </h3>
+                <p style={{ fontSize: '13px', color: '#6a6a6a' }}>
+                  Digite o código de verificação enviado para o seu e-mail: <strong>{email}</strong>
+                </p>
+              </div>
+
+              <form onSubmit={handleConfirmSubmit}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: 4 }}>Código de Verificação</label>
+                  <input
+                    type="text"
+                    placeholder="Digite o código de 6 dígitos"
+                    value={codigo}
+                    onChange={(e) => setCodigo(e.target.value)}
+                    required
+                    autoFocus
+                    style={{ textAlign: 'center', letterSpacing: '4px', fontSize: '18px', fontWeight: 'bold' }}
+                  />
+                </div>
+
+                <button type="submit" className="btn-primary" disabled={carregando} style={{ width: '100%', padding: '12px' }}>
+                  {carregando ? 'Confirmando...' : 'CONFIRMAR'}
+                </button>
+              </form>
+
+              <div style={{ textAlign: 'center', marginTop: 24, fontSize: '14px', color: '#475569' }}>
+                Não recebeu o código?{' '}
+                <a href="#register" style={{ fontWeight: '600' }} onClick={(e) => { e.preventDefault(); setErro(''); setStep('register'); }}>
+                  Voltar para o cadastro
                 </a>
               </div>
             </div>

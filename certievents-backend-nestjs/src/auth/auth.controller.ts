@@ -77,4 +77,23 @@ export class AuthController {
       });
     }
   }
+
+  @Post('confirmar')
+  @HttpCode(HttpStatus.OK)
+  async confirmar(@Body() body: { email: string; codigo: string }) {
+    if (!body.email || !body.codigo) {
+      throw new BadRequestException('E-mail e código são obrigatórios.');
+    }
+    try {
+      await this.cognitoService.confirmarCadastro(body.email, body.codigo);
+      return {
+        message: 'Cadastro confirmado com sucesso! Você já pode fazer login.',
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        message: 'Erro ao confirmar cadastro. Verifique o código e tente novamente.',
+        error: error.message || error,
+      });
+    }
+  }
 }
