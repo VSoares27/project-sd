@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4 landscape;
@@ -17,76 +17,214 @@
             height: 210mm;
             box-sizing: border-box;
             overflow: hidden;
-            background-color: #000000;
-        }
-        .certificate-container {
-            width: 297mm;
-            height: 210mm;
-            position: relative;
-            background-image: url('data:image/jpeg;base64,{{bgImageBase64}}');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            box-sizing: border-box;
-        }
-        .nome {
-            position: absolute;
-            top: 388px; /* Ajustado para ficar exatamente sobre a linha branca */
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 40px;
-            font-weight: 700;
+            background: linear-gradient(135deg, #090615 0%, #030206 100%);
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.6), 0 0 20px rgba(168, 85, 247, 0.4);
-            letter-spacing: 1.5px;
         }
-        .assinatura-coordenacao {
+        .border-glow {
             position: absolute;
-            bottom: 108px; /* Acima da linha de Coordenação do Evento */
-            left: 295px; /* Alinhado horizontalmente */
-            transform: translate(-50%, 0) rotate(-3deg);
-            font-family: 'Alex Brush', cursive;
-            font-size: 42px;
-            color: #d8b4fe; /* Tom roxo claro neon */
-            text-shadow: 0 0 5px rgba(216, 180, 254, 0.6);
-            white-space: nowrap;
+            top: 15mm;
+            left: 15mm;
+            right: 15mm;
+            bottom: 15mm;
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, #8b5cf6, #ec4899, #3b82f6) 1;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.25);
+            pointer-events: none;
+            box-sizing: border-box;
         }
-        .assinatura-direcao {
-            position: absolute;
-            bottom: 108px; /* Acima da linha de Direção-Geral */
-            right: 215px; /* Alinhado horizontalmente */
-            transform: translate(50%, 0) rotate(-1deg);
-            font-family: 'Alex Brush', cursive;
-            font-size: 42px;
-            color: #d8b4fe; /* Tom roxo claro neon */
-            text-shadow: 0 0 5px rgba(216, 180, 254, 0.6);
-            white-space: nowrap;
+        .content-container {
+            width: 100%;
+            height: 100%;
+            padding: 25mm 25mm;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
         }
-        .certificado-id {
-            position: absolute;
-            bottom: 15px;
-            right: 25px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 9px;
-            color: rgba(255, 255, 255, 0.35);
-            letter-spacing: 1.5px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .logo {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             text-transform: uppercase;
+        }
+        .logo-symbol {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 2px;
+        }
+        .event-badge {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 50px;
+            padding: 4px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #d8b4fe;
+            letter-spacing: 1px;
+        }
+        .main-title {
+            text-align: center;
+            margin-top: 5px;
+        }
+        .cert-title {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #ffffff 30%, #e879f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 0 15px rgba(232, 121, 249, 0.2);
+        }
+        .cert-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .body-section {
+            text-align: center;
+            margin: 15px 0;
+            max-width: 80%;
+        }
+        .certificamos-que {
+            font-size: 14px;
+            color: #c084fc;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        .nome {
+            font-size: 38px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(to right, transparent, rgba(168, 85, 247, 0.6), transparent) 1;
+            padding-bottom: 8px;
+            display: inline-block;
+            min-width: 300px;
+        }
+        .desc-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-top: 15px;
+        }
+        .desc-text strong {
+            color: #f1f5f9;
+        }
+        .footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 10px;
+        }
+        .signature-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 250px;
+            position: relative;
+        }
+        .signature-line {
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 5px;
+        }
+        .signature-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 6px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .signature-image {
+            font-family: 'Alex Brush', cursive;
+            font-size: 36px;
+            color: #e9d5ff;
+            text-shadow: 0 0 5px rgba(233, 213, 255, 0.4);
+            margin-bottom: -5px;
+            transform: rotate(-3deg);
+        }
+        .validation-code {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            text-align: center;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <div class="certificate-container">
-        <!-- Nome do Participante -->
-        <div class="nome">{{nome}}</div>
+    <div class="border-glow"></div>
+    <div class="content-container">
+        <!-- Cabeçalho com Logos e Identificação -->
+        <div class="header">
+            <div class="logo">
+                <span class="logo-symbol"></span> IFPE Campus Igarassu
+            </div>
+            <div class="event-badge">
+                DEMO WEEK 2026
+            </div>
+        </div>
 
-        <!-- Assinaturas Inventadas -->
-        <div class="assinatura-coordenacao">Diego Nunes</div>
-        <div class="assinatura-direcao">Victor Soares</div>
+        <!-- Título do Certificado -->
+        <div class="main-title">
+            <h1 class="cert-title">Certificado</h1>
+            <div class="cert-subtitle">De Participação</div>
+        </div>
 
-        <!-- ID de Validação do Certificado -->
-        <div class="certificado-id">ID: {{certificadoId}}</div>
+        <!-- Seção do Texto Principal -->
+        <div class="body-section">
+            <div class="certificamos-que">Certificamos que</div>
+            <div class="nome">{{nome}}</div>
+            <div class="desc-text">
+                participou do evento <strong>{{evento}}</strong> – Evento de Tecnologia e Inovação,<br>
+                realizado nos dias <strong>15 e 16 de Julho de 2025</strong>, no <strong>IFPE Campus Igarassu</strong>.
+            </div>
+        </div>
+
+        <!-- Assinaturas e Código de Validação -->
+        <div class="footer">
+            <div class="signature-block">
+                <span class="signature-image">Diego Nunes</span>
+                <div class="signature-line"></div>
+                <span class="signature-label">Coordenação do Evento</span>
+            </div>
+            
+            <div class="signature-block">
+                <div class="validation-code">Código de validação: {{certificadoId}}</div>
+            </div>
+
+            <div class="signature-block">
+                <span class="signature-image" style="transform: rotate(-1deg);">Victor Soares</span>
+                <div class="signature-line"></div>
+                <span class="signature-label">Direção-Geral</span>
+            </div>
+        </div>
     </div>
 </body>
 </html>

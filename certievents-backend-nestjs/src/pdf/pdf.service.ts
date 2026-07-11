@@ -14,14 +14,8 @@ export class PdfService {
   }
 
   async gerarCertificado(nome: string, evento: string, data: string, certificadoId: string): Promise<Buffer> {
-    const bgPath = path.join(__dirname, 'templates', 'template-demo-week.jpg');
-    let bgImageBase64 = '';
-    if (fs.existsSync(bgPath)) {
-      bgImageBase64 = fs.readFileSync(bgPath).toString('base64');
-    }
-
     const template = handlebars.compile(this.templateStr);
-    const html = template({ nome, evento, data, certificadoId, bgImageBase64 });
+    const html = template({ nome, evento, data, certificadoId });
 
     // Inicia o Puppeteer no modo headless
     const browser = await puppeteer.launch({
