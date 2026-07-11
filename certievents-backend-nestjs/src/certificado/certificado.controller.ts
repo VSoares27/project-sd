@@ -54,12 +54,21 @@ export class CertificadoController {
       });
 
       // 4. Envia o PDF em anexo por e-mail via AWS SES
-      await this.sesService.enviarCertificado(dto.email, dto.nome, pdfBuffer, certificadoId);
+      let emailEnviado = true;
+      try {
+        await this.sesService.enviarCertificado(dto.email, dto.nome, pdfBuffer, certificadoId);
+      } catch (emailError) {
+        console.error('Erro ao enviar e-mail pelo SES (talvez restrição de Sandbox):', emailError.message || emailError);
+        emailEnviado = false;
+      }
 
       return {
-        message: 'Certificado gerado e enviado por e-mail com sucesso.',
+        message: emailEnviado
+          ? 'Certificado gerado e enviado por e-mail com sucesso.'
+          : 'Certificado gerado com sucesso, mas o envio de e-mail falhou (restrição de Sandbox/SES).',
         certificadoId,
         urlS3,
+        emailEnviado,
       };
     } catch (error) {
       throw new InternalServerErrorException({
