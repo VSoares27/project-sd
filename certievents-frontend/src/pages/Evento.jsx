@@ -50,7 +50,7 @@ export default function Evento() {
     if (!token) return; // Se deslogado, usa o mockup padrão
 
     try {
-      const res = await api.get('/evento');
+      const res = await api.get('/evento/demo-week');
       let dados = res.data;
       if (typeof dados === 'string') {
         const jsonMatch = dados.match(/\{.*\}/s);

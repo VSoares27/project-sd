@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import LoginModal from '../components/LoginModal';
+import api from '../services/api';
 
 export default function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -8,11 +9,27 @@ export default function Home() {
   const [userNome, setUserNome] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('Recife');
+  const [events, setEvents] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     checkLoginState();
+    carregarEventos();
   }, []);
+
+  async function carregarEventos() {
+    try {
+      const res = await api.get('/evento');
+      let dados = res.data;
+      if (typeof dados === 'string') {
+        const jsonMatch = dados.match(/\{.*\}/s);
+        if (jsonMatch) dados = JSON.parse(jsonMatch[0]);
+      }
+      setEvents(dados || []);
+    } catch (error) {
+      console.error('Erro ao carregar eventos:', error);
+    }
+  }
 
   function checkLoginState() {
     const token = localStorage.getItem('accessToken');
@@ -40,48 +57,9 @@ export default function Home() {
     }
   }
 
-  // Eventos fake + evento oficial Demo Week
-  const events = [
-    {
-      id: 'demo-week',
-      title: 'Demo Week - Evento de Tecnologia e Inovação',
-      organizer: 'IFPE Campus Igarassu',
-      date: '15 e 16 de Julho',
-      location: 'Campus Igarassu - PE',
-      imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=60',
-      isOfficial: true,
-      price: 'Grátis'
-    },
-    {
-      id: 'react-19',
-      title: 'React 19 & Vite Bootcamp',
-      organizer: 'DevCommunity Nordeste',
-      date: '20 de Julho às 19:00',
-      location: 'Recife, PE',
-      imageUrl: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=60',
-      price: 'R$ 29,90'
-    },
-    {
-      id: 'laravel-aws',
-      title: 'Workshop Laravel & AWS Cloud',
-      organizer: 'TSI Alumni',
-      date: '28 de Out a 02 de Nov',
-      location: 'Online',
-      imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=60',
-      price: 'Grátis'
-    },
-    {
-      id: 'metal-fest',
-      title: 'Metal Fest Recife 2026',
-      organizer: 'Darkside Studio',
-      date: 'Sábado, 15 de Ago às 19:00',
-      location: 'Recife, PE',
-      imageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=60',
-      price: 'R$ 45,00'
-    }
-  ];
+  // Os eventos são carregados dinamicamente do banco de dados no backend
 
-  const filteredEvents = events.filter(e => 
+  const filteredEvents = events.filter(e =>
     e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     e.organizer.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -121,7 +99,7 @@ export default function Home() {
           <nav className="header-nav">
             <a href="#criar" className="nav-link" onClick={(e) => { e.preventDefault(); alert("Em breve: Criação de eventos!"); }}>Criar evento</a>
             <span className="nav-link" style={{ cursor: 'pointer' }} onClick={handleMeusIngressos}>Meus ingressos</span>
-            
+
             {isLoggedIn ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div className="user-profile-menu" onClick={handleMeusIngressos}>
@@ -142,7 +120,7 @@ export default function Home() {
       {/* Main Hero / Banner */}
       <section style={{ backgroundColor: '#ffffff', padding: '32px 0', borderBottom: '1px solid var(--border-color)' }}>
         <div className="container" style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-          
+
           <div style={{ flex: '2 1 600px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <span style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>
               DESTAQUE DA SEMANA
@@ -321,7 +299,7 @@ export default function Home() {
           </div>
           <div>
             <h4 style={{ color: '#fff', marginBottom: 12 }}>Desenvolvedores</h4>
-            <p>Diego Nunes, Viktor Soares e Viktor Gustavo</p>
+            <p>Diego Nunes, Victor Soares e Victor Gustavo</p>
             <p style={{ marginTop: 8 }}>IFPE TSI 2026</p>
           </div>
         </div>
