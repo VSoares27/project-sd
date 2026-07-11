@@ -1,92 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@700&display=swap" rel="stylesheet">
-    <style>
-        @page {
-            size: A4 landscape;
-            margin: 0;
-        }
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 297mm;
-            height: 210mm;
-            box-sizing: border-box;
-            overflow: hidden;
-            background-color: #000000;
-        }
-        .certificate-container {
-            width: 297mm;
-            height: 210mm;
-            position: relative;
-            background-image: url('data:image/png;base64,{{bgImageBase64}}');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            box-sizing: border-box;
-        }
-        .nome-participante {
-            position: absolute;
-            top: 430px; /* Alinhado perfeitamente acima da linha branca de participante */
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 38px;
-            font-weight: 700;
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.4);
-            letter-spacing: 1.5px;
-        }
-        .assinatura-coordenacao {
-            position: absolute;
-            bottom: 78px; /* Posicionado acima da linha 'Coordenação do Evento' */
-            left: 330px; /* Centro da linha esquerda no A4 */
-            transform: translate(-50%, 0) rotate(-3deg);
-            font-family: 'Alex Brush', cursive;
-            font-size: 36px;
-            color: #d8b4fe; /* Tom lilás neon */
-            text-shadow: 0 0 5px rgba(216, 180, 254, 0.6);
-            white-space: nowrap;
-        }
-        .assinatura-direcao {
-            position: absolute;
-            bottom: 78px; /* Posicionado acima da linha 'Direção-Geral' */
-            left: 792px; /* Centro da linha direita no A4 */
-            transform: translate(-50%, 0) rotate(-1deg);
-            font-family: 'Alex Brush', cursive;
-            font-size: 36px;
-            color: #d8b4fe; /* Tom lilás neon */
-            text-shadow: 0 0 5px rgba(216, 180, 254, 0.6);
-            white-space: nowrap;
-        }
-        .certificado-id {
-            position: absolute;
-            bottom: 12px;
-            right: 35px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 8px;
-            color: rgba(255, 255, 255, 0.35);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-    </style>
+<meta charset="UTF-8">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Alex+Brush&display=swap" rel="stylesheet">
+
+<style>
+
+@page{
+    size:A4 landscape;
+    margin:0;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:297mm;
+    height:210mm;
+    overflow:hidden;
+}
+
+body{
+    font-family:'Montserrat',sans-serif;
+}
+
+.certificate{
+
+    position:relative;
+
+    width:297mm;
+    height:210mm;
+
+    background:url("data:image/png;base64,{{bgImageBase64}}") center center no-repeat;
+    background-size:100% 100%;
+}
+
+/* ---------------- Nome ---------------- */
+
+.nome{
+
+    position:absolute;
+
+    width:100%;
+
+    top:107mm;
+
+    text-align:center;
+
+    font-size:19px;
+    font-weight:700;
+
+    color:white;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    text-shadow:
+        0 0 5px #b84dff,
+        0 0 10px #b84dff,
+        0 0 18px rgba(184,77,255,.6);
+
+}
+
+/* ---------------- Assinaturas ---------------- */
+
+.assinatura{
+
+    position:absolute;
+
+    font-size:32px; /* Aumentado um pouco para compensar o tamanho natural da fonte cursiva */
+    font-family:'Alex Brush', cursive;
+
+    color: white;
+    white-space:nowrap;
+}
+
+.coord{
+    bottom:23.5mm;
+    left:24%;
+}
+
+.dir{
+    bottom:23.5mm;
+    left:63.5%;
+}
+
+/* ---------------- Código ---------------- */
+
+.codigo{
+
+    position:absolute;
+
+    right:13mm;
+    bottom:5mm;
+
+    font-size:7px;
+
+    color:rgba(255,255,255,.45);
+
+    letter-spacing:1px;
+
+}
+
+</style>
 </head>
+
 <body>
-    <div class="certificate-container">
-        <!-- Nome do Participante sobreposto -->
-        <div class="nome-participante">{{nome}}</div>
 
-        <!-- Assinaturas sobrepostas -->
-        <div class="assinatura-coordenacao">Liliane Alves</div>
-        <div class="assinatura-direcao">Lincoln Tavares</div>
+<div class="certificate">
 
-        <!-- ID do Certificado para autenticidade -->
-        <div class="certificado-id">ID: {{certificadoId}}</div>
+    <div class="nome">
+        {{nome}}
     </div>
+
+    <div class="assinatura coord">
+        Liliane Alves
+    </div>
+
+    <div class="assinatura dir">
+        Lincoln Tavares
+    </div>
+
+    <div class="codigo">
+        ID {{certificadoId}}
+    </div>
+
+</div>
+
 </body>
 </html>
