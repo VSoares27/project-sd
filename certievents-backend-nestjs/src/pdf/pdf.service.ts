@@ -6,20 +6,23 @@ import * as path from 'path';
 
 @Injectable()
 export class PdfService {
-  async gerarCertificado(nome: string, evento: string, data: string, certificadoId: string): Promise<Buffer> {
+  async gerarCertificado(
+    nome: string,
+    evento: string,
+    data: string,
+    certificadoId: string,
+  ): Promise<Buffer> {
     const templatePath = path.join(__dirname, 'templates', 'certificado.hbs');
     const templateStr = fs.readFileSync(templatePath, 'utf8');
 
-    const bgPath = path.join(__dirname, 'templates', 'template-demo-week.png');
-    let bgImageBase64 = '';
-    if (fs.existsSync(bgPath)) {
-      bgImageBase64 = fs.readFileSync(bgPath).toString('base64');
-    }
-
     const template = handlebars.compile(templateStr);
-    const html = template({ nome, evento, data, certificadoId, bgImageBase64 });
+    const html = template({
+      nome,
+      evento,
+      data,
+      certificadoId,
+    });
 
-    // Inicia o Puppeteer no modo headless
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -29,11 +32,16 @@ export class PdfService {
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
-      // Gera o PDF no formato A4 horizontal (landscape)
       const pdfBuffer = await page.pdf({
         format: 'A4',
         landscape: true,
         printBackground: true,
+        margin: {
+          top: '20px',
+          bottom: '20px',
+          left: '20px',
+          right: '20px',
+        },
       });
 
       return pdfBuffer as Buffer;
