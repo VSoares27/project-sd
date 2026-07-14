@@ -107,4 +107,4 @@ O projeto é dividido entre backend (Node.js), frontend (React) e infraestrutura
 
 - [Diego Nunes](https://github.com/Diego-jpeg-27)
 - [Victor Gustavo](https://github.com/victorgustavodev)
-- [Viktor Soares](https://github.com/VSoares27)
+- [Victor Soares](https://github.com/VSoares27)
